@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFChat AI - Document Intelligence</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- PDF Download Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <span>PDFChat <b>AI</b></span>
+            </div>
+
+            <div class="sidebar-menu">
+
+                <p class="menu-heading">MAIN MENU</p>
+
+                <a href="#" class="nav-link active" data-page="workspace">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </a>
+
+                <a href="#" class="nav-link" data-page="workspace">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Chat with PDF</span>
+                </a>
+
+                <a href="#" class="nav-link" data-page="summary">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>AI Summarizer</span>
+                </a>
+
+                <a href="#" class="nav-link" data-page="keypoints">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span>Important Points</span>
+                </a>
+
+                <a href="#" class="nav-link" data-page="quiz">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span>Quiz Generator</span>
+                </a>
+
+                <p class="menu-heading">YOUR WORKSPACE</p>
+
+                <a href="#" class="nav-link" data-page="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Chat History</span>
+                </a>
+
+                <a href="#" class="nav-link" data-page="documents">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>My Documents</span>
+                </a>
+
+                <a href="#" class="nav-link" data-page="settings">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+
+            </div>
+
+            <div class="sidebar-bottom">
+
+                <div class="sidebar-help">
+                    <div class="help-icon">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h4>Need Help?</h4>
+                    <p>Get support for using PDFChat AI.</p>
+                    <button class="help-btn">Contact Support</button>
+                </div>
+
+                <div class="sidebar-profile">
+                    <div class="profile-avatar">P</div>
+                    <div class="profile-info">
+                        <h4>My Workspace</h4>
+                        <p>Free Account</p>
+                    </div>
+                    <i class="fa-solid fa-ellipsis"></i>
+                </div>
+
+            </div>
+
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <main class="workspace">
+
+            <!-- TOP HEADER -->
+            <header class="topbar">
+
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobileMenu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div>
+                        <h2 id="pageTitle">Chat with PDF</h2>
+                        <p>Ask questions and understand your documents</p>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+
+                    <div class="topbar-status">
+                        <span class="status-dot"></span>
+                        AI Ready
+                    </div>
+
+                    <button class="theme-toggle" id="themeToggle" title="Switch theme"
+                        aria-label="Switch between light and dark mode">
+                        <i class="fa-solid fa-moon" id="themeIcon"></i>
+                        <span id="themeText">Dark Mode</span>
+                    </button>
+
+                    <button class="notification-btn" title="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                    </button>
+
+                    <div class="top-avatar">P</div>
+
+                </div>
+
+            </header>
+
+            <!-- PDF AND CHAT WORKSPACE -->
+            <section class="document-workspace" id="workspace">
+
+                <!-- LEFT PDF PANEL -->
+                <section class="pdf-panel">
+
+                    <div class="panel-toolbar">
+
+                        <div class="file-controls">
+
+                            <select id="documentSelect">
+                                <option value="">Select a PDF document</option>
+                            </select>
+
+                            <button class="secondary-btn" id="renameBtn">
+                                <i class="fa-solid fa-pen"></i>
+                                Rename
+                            </button>
+
+                        </div>
+
+                        <button class="upload-btn" id="browseBtn">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            Upload PDF
+                        </button>
+
+                        <input type="file" id="pdfInput" accept=".pdf,application/pdf" hidden>
+
+                    </div>
+
+                    <!-- PDF VIEWER -->
+                    <div class="pdf-viewer-container" id="dropZone">
+
+                        <div class="pdf-empty-state" id="pdfEmptyState">
+
+                            <div class="pdf-empty-icon">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+
+                            <h3>Upload your PDF</h3>
+
+                            <p>Choose a PDF document to start reading and chatting with AI.</p>
+
+                            <button class="upload-btn" id="emptyUploadBtn">
+                                <i class="fa-solid fa-upload"></i>
+                                Choose PDF
+                            </button>
+
+                            <small>PDF files only</small>
+
+                        </div>
+
+                        <iframe id="pdfViewer" class="pdf-viewer" title="PDF Document Viewer" hidden></iframe>
+
+                    </div>
+
+                    <div class="pdf-footer">
+                        <span id="pdfFileName">
+                            <i class="fa-regular fa-file-pdf"></i>
+                            No document selected
+                        </span>
+
+                        <span id="pdfPageInfo">PDF Viewer</span>
+                    </div>
+
+                </section>
+
+                <!-- RIGHT AI CHAT PANEL -->
+                <section class="chat-panel">
+
+                    <div class="chat-panel-header">
+
+                        <div class="chat-title">
+                            <div class="ai-status-icon">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+
+                            <div>
+                                <h3>AI Assistant</h3>
+                                <p><span class="status-dot"></span> Ready to help</p>
+                            </div>
+                        </div>
+
+                        <div class="chat-header-actions">
+
+                            <select id="conversationSelect">
+                                <option value="">Select conversation</option>
+                            </select>
+
+                            <button class="secondary-btn" id="editChatBtn">
+                                <i class="fa-solid fa-pen"></i>
+                                Edit
+                            </button>
+
+                            <button class="new-chat-btn" id="newChatBtn">
+                                <i class="fa-solid fa-plus"></i>
+                                New Chat
+                            </button>
+                            <button class="secondary-btn" id="downloadChatBtn">
+                                <i class="fa-solid fa-download"></i>
+                                Export Chat
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CHAT CONTENT -->
+                    <div class="chat-content" id="chatWindow">
+
+                        <div class="welcome-screen" id="welcomeScreen">
+
+                            <div class="welcome-icons">
+                                <div class="welcome-icon purple">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </div>
+
+                                <div class="welcome-icon orange">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+
+                                <div class="welcome-icon blue">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                </div>
+                            </div>
+
+                            <h1>How can I help you today?</h1>
+
+                            <p>Upload a PDF and let AI help you understand your document.</p>
+
+                            <div class="suggestion-cards">
+
+                                <button class="suggestion-card" data-prompt="Summarize this PDF document">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                    <span>Summarize this PDF</span>
+                                </button>
+
+                                <button class="suggestion-card"
+                                    data-prompt="Explain the important points in this document">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                    <span>Find important points</span>
+                                </button>
+
+                                <button class="suggestion-card" data-prompt="Generate quiz questions from this PDF">
+                                    <i class="fa-solid fa-circle-question"></i>
+                                    <span>Generate quiz questions</span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- AI CHAT INPUT -->
+                    <div class="chat-input-section">
+
+                        <div class="selected-document" id="chatDocumentName">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>No PDF selected</span>
+                        </div>
+
+                        <div class="chat-input-box">
+
+                            <textarea id="questionInput" placeholder="Ask anything about your PDF..."
+                                rows="2"></textarea>
+
+                            <div class="input-bottom">
+
+                                <div class="input-tools">
+
+                                    <button id="attachBtn" title="Attach PDF">
+                                        <i class="fa-solid fa-paperclip"></i>
+                                    </button>
+
+                                    <select id="aiModel">
+                                        <option value="default">AI Assistant</option>
+                                        <option value="fast">Fast Response</option>
+                                        <option value="detailed">Detailed Response</option>
+                                    </select>
+
+                                </div>
+
+                                <button class="send-btn" id="sendQuestion">
+                                    Send
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <p class="chat-disclaimer">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            AI can make mistakes. Verify important information.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+            <!-- SUMMARY PAGE -->
+            <section class="feature-page" id="summary" hidden>
+
+                <div class="feature-heading">
+                    <h2>AI PDF Summarizer</h2>
+                    <p>Generate a clear summary of your uploaded document.</p>
+                </div>
+
+                <select id="summarySelect">
+                    <option value="">Select PDF document</option>
+                </select>
+
+                <button class="primary-btn" id="generateSummary">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    Generate Summary
+                </button>
+
+                <div class="output-box" id="summaryOutput">
+                    Your PDF summary will appear here.
+                </div>
+
+                <!-- DOWNLOAD SUMMARY PDF -->
+                <button class="primary-btn" id="downloadSummaryBtn" type="button">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    Download Summary PDF
+                </button>
+
+            </section>
+
+            <!-- KEY POINTS PAGE -->
+            <section class="feature-page" id="keypoints" hidden>
+
+                <div class="feature-heading">
+                    <h2>Important Key Points</h2>
+                    <p>Extract the most important information from your PDF.</p>
+                </div>
+
+                <select id="keypointsSelect">
+                    <option value="">Select PDF document</option>
+                </select>
+
+                <button class="primary-btn" id="generateKeypoints">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    Extract Key Points
+                </button>
+
+                <div class="output-box" id="keypointsOutput">
+                    Important points will appear here.
+                </div>
+                <button class="primary-btn" id="downloadKeypointsBtn">
+                    <i class="fa-solid fa-download"></i>
+                    Download Important Points PDF
+                </button>
+
+            </section>
+
+            <!-- QUIZ PAGE -->
+            <section class="feature-page" id="quiz" hidden>
+
+                <div class="feature-heading">
+                    <h2>AI Quiz Generator</h2>
+                    <p>Create quiz questions from your PDF document.</p>
+                </div>
+
+                <select id="quizSelect">
+                    <option value="">Select PDF document</option>
+                </select>
+
+                <button class="primary-btn" id="generateQuiz">
+                    <i class="fa-solid fa-circle-question"></i>
+                    Generate Quiz
+                </button>
+
+                <div class="output-box" id="quizOutput">
+                    Your quiz questions will appear here.
+                </div>
+                <button class="primary-btn" id="downloadQuizBtn">
+                    <i class="fa-solid fa-download"></i>
+                    Download Quiz PDF
+                </button>
+
+            </section>
+
+            <!-- DOCUMENTS PAGE -->
+            <section class="feature-page" id="documents" hidden>
+
+                <div class="feature-heading">
+                    <h2>My Documents</h2>
+                    <p>Manage your uploaded PDF documents.</p>
+                </div>
+
+                <div class="document-list" id="uploadedDocuments">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <p>No documents uploaded yet.</p>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- HISTORY PAGE -->
+            <section class="feature-page" id="history" hidden>
+
+                <div class="feature-heading">
+                    <h2>Chat History</h2>
+                    <p>View your previous conversations.</p>
+                </div>
+
+                <div class="output-box" id="historyOutput">
+                    Your conversations will appear here.
+                </div>
+
+            </section>
+
+            <!-- SETTINGS PAGE -->
+            <section class="feature-page" id="settings" hidden>
+
+                <div class="feature-heading">
+                    <h2>Settings</h2>
+                    <p>Customize your PDFChat AI workspace.</p>
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-row">
+                        <div>
+                            <h3>Appearance</h3>
+                            <p>Switch between light and dark themes.</p>
+                        </div>
+
+                        <button class="theme-toggle settings-theme-toggle" id="settingsThemeToggle">
+                            <i class="fa-solid fa-moon"></i>
+                            Toggle Theme
+                        </button>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="app-footer">
+                <p>© 2026 PDFChat AI. AI-powered document intelligence.</p>
+            </footer>
+
+        </main>
+
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="js/pdf.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
